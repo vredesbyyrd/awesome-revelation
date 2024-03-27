@@ -5,7 +5,7 @@ My personal fork of revelation. requires [bling](https://blingcorp.github.io/bli
 Differences from upstream:
 - Show minimized clients when using `curr_tag_only`. When using a mix of tiled and floating layouts, this behavior makes more sense IMO.
 - Make `curr_tag_only` truly `curr_tag_only`. Old behavior would include the visible tag on other screens, Not just the tag that revelation is called from.
-- Now layout changes depending on the number of clients in a tag. `#clients <= 4 and fair or bling.equalarea`. I prefer `equalarea` when there are lots clients. Still may try to make this better.
+- Now, layout changes depending on the number of clients in a tag. `#clients <= 4 and fair or bling.equalarea`. I prefer `equalarea` when there are lots clients. Still room for improvement here.
 - Minor styling changes to the hintbox
 
 
