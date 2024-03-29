@@ -186,8 +186,16 @@ function revelation.expose(args)
     clientData = {}
 
     -- choose layout depending on # of clients, requires bling lib
-    local function layoutAlgo(client_list)
-        return #client_list <= 4 and awful.layout.suit.fair or bling.layout.equalarea
+    local function layoutAlgo(_clients)
+        local mfc = rule.any and revelation.match.any or revelation.match.exact
+        local mf = is_excluded and function(c,rule) return not mfc(c,rule) end or mfc
+        local clen = 0
+        for _, c in pairs(_clients) do
+            if mf(c, rule) then
+                clen = clen + 1
+            end
+        end
+        return clen <= 4 and awful.layout.suit.fair or bling.layout.equalarea
     end
 
     --[[ Majority of changed behavior from upstream is here.
@@ -198,25 +206,25 @@ function revelation.expose(args)
     3: Choose awful.layout 'algo' depending on # of clients (requires bling) ]]
     if curr_tag_only then
         local scr = mouse.screen.index
-        local client_list = mouse.screen.selected_tag:clients()
+        local _clients = mouse.screen.selected_tag:clients()
 
         t[scr] = awful.tag.new({revelation.tag_name},
-            scr, layoutAlgo(client_list))[1]
+            scr, layoutAlgo(_clients))[1]
         zt[scr] = awful.tag.new({revelation.tag_name.."_zoom"},
             scr, awful.layout.suit.fair)[1]
 
-        match_clients(rule, client_list, t[scr], is_excluded)
+        match_clients(rule, _clients, t[scr], is_excluded)
 
         view_only_func(t[scr])
     else
         for scr=1,capi.screen.count() do
-            local client_list = capi.client.get(scr)
+            local _clients = capi.client.get(scr)
             t[scr] = awful.tag.new({revelation.tag_name},
-                scr, layoutAlgo(client_list))[1]
+                scr, layoutAlgo(_clients))[1]
             zt[scr] = awful.tag.new({revelation.tag_name.."_zoom"},
                 scr, awful.layout.suit.fair)[1]
 
-            match_clients(rule, client_list, t[scr], is_excluded)
+            match_clients(rule, _clients, t[scr], is_excluded)
 
             view_only_func(t[scr])
         end
